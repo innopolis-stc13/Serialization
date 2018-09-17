@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Monkey>
+  <name>Mother monkey</name>
+  <specied>Monkey zoo</specied>
+  <age>8</age>
+  <weight>40</weight>
+  <tailLenght>80</tailLenght>
+  <presenceOfChildren>true</presenceOfChildren>
+</Monkey>
