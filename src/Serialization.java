@@ -1,19 +1,40 @@
-import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.jdom2.filter.ContentFilter;
 import org.jdom2.input.SAXBuilder;
-import javax.lang.model.util.ElementFilter;
-import java.io.File;
-import java.io.IOException;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
+
 import java.lang.reflect.Field;
-import java.util.Iterator;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
-public class ConvertXMLToObject {
+public class Serialization {
 
-    public static Object XMLToObject(String path) {
+    public static void convertObjectToXML(Object object) throws IOException {
+        Document xml = new Document();
+        Element root = new Element(object.getClass().getName());
+        xml.setRootElement(root);
+        Field[] fields = object.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Element name = new Element(field.getName());
+                name.addContent(field.get(object).toString());
+                root.addContent(name);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        Format fmt = Format.getPrettyFormat();
+        XMLOutputter serializer = new XMLOutputter(fmt);
+        serializer.output(xml, System.out);
+        serializer.output(xml, new FileOutputStream(new File(object.getClass().getName() + "Info.xml")));
+    }
+
+    public static Object convertXMLToObject(String path) {
         Object object = null;
         SAXBuilder parser = new SAXBuilder();
         Document xmlDoc;
@@ -79,4 +100,5 @@ public class ConvertXMLToObject {
         }
         return object;
     }
+
 }
